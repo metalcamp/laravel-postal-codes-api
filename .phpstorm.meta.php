@@ -5,7 +5,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2020-04-11 09:48:44.
+    * Generated on 2020-04-11 13:35:04.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -1245,6 +1245,7 @@ namespace PHPSTORM_META {
 
 	override(\factory(0), map([
         '' => '@FactoryBuilder',
+        'App\Province' => \App\ProvinceFactoryBuilder::class,
         'App\Country' => \App\CountryFactoryBuilder::class,
         'App\User' => \App\UserFactoryBuilder::class,
         'App\City' => \App\CityFactoryBuilder::class,

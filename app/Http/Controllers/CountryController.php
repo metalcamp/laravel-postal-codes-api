@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Country;
+use App\Http\Resources\CountryResource;
 use Illuminate\Http\Request;
 
 class CountryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    private const ITEMS_PER_PAGE = 25;
+
     public function index()
     {
-        //
+        return CountryResource::collection(
+            Country::paginate(self::ITEMS_PER_PAGE)
+        );
     }
 
     /**
