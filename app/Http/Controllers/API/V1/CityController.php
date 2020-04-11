@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API\V1;
 
-use App\Province;
+use App\City;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class ProvinceController extends Controller
+class CityController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,10 +21,11 @@ class ProvinceController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Province  $province
+     * @param \App\City $city
+     *
      * @return \Illuminate\Http\Response
      */
-    public function show(Province $province)
+    public function show(City $city)
     {
         //
     }
@@ -31,7 +33,8 @@ class ProvinceController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -42,11 +45,12 @@ class ProvinceController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Province  $province
+     * @param \Illuminate\Http\Request $request
+     * @param \App\City                $city
+     *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Province $province)
+    public function update(Request $request, City $city)
     {
         //
     }
@@ -54,10 +58,11 @@ class ProvinceController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Province  $province
+     * @param \App\City $city
+     *
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Province $province)
+    public function destroy(City $city)
     {
         //
     }

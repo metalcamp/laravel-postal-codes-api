@@ -14,7 +14,7 @@ class CountriesTest extends TestCase
     public function it_can_get_list_of_countries()
     {
         factory(Country::class, 50)->create();
-        $response = $this->get('/api/countries');
+        $response = $this->get('/api/v1/countries');
 
         $response->assertStatus(200);
     }
