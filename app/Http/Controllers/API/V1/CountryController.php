@@ -4,8 +4,9 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Country;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateCountry;
+use App\Http\Requests\UpdateCountry;
 use App\Http\Resources\CountryResource;
-use Illuminate\Http\Request;
 
 class CountryController extends Controller
 {
@@ -23,33 +24,26 @@ class CountryController extends Controller
         return new CountryResource($country);
     }
 
-    public function store(Request $request)
+    public function store(CreateCountry $request)
     {
+        $validated = $request->validated();
+        $country   = Country::create($request->only('name'));
 
+        return response()->json(new CountryResource($country), 201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Country             $country
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Country $country)
+    public function update(UpdateCountry $request, Country $country)
     {
-        //
+        $validated = $request->validated();
+        $country->update(['name' => $request->get('name')]);
+
+        return response()->json(null, 204);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \App\Country $country
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Country $country)
     {
-        //
+        $country->delete();
+
+        return response()->json(null, 204);
     }
 }
