@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCountryRequest;
 use App\Http\Requests\UpdateCountryRequest;
 use App\Http\Resources\CountryResource;
+use App\Http\Resources\CountryResourceCollection;
 
 class CountryController extends Controller
 {
@@ -14,8 +15,9 @@ class CountryController extends Controller
 
     public function index()
     {
-        return CountryResource::collection(
-            Country::paginate(self::ITEMS_PER_PAGE)
+        return CountryResourceCollection::make(
+            Country::with(['cities', 'provinces'])
+                ->paginate(self::ITEMS_PER_PAGE)
         );
     }
 
