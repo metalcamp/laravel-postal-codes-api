@@ -4,8 +4,8 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Country;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CreateCountry;
-use App\Http\Requests\UpdateCountry;
+use App\Http\Requests\CreateCountryRequest;
+use App\Http\Requests\UpdateCountryRequest;
 use App\Http\Resources\CountryResource;
 
 class CountryController extends Controller
@@ -24,18 +24,18 @@ class CountryController extends Controller
         return new CountryResource($country);
     }
 
-    public function store(CreateCountry $request)
+    public function store(CreateCountryRequest $request)
     {
         $validated = $request->validated();
-        $country   = Country::create($request->only('name'));
+        $country   = Country::create($validated);
 
         return response()->json(new CountryResource($country), 201);
     }
 
-    public function update(UpdateCountry $request, Country $country)
+    public function update(UpdateCountryRequest $request, Country $country)
     {
         $validated = $request->validated();
-        $country->update(['name' => $request->get('name')]);
+        $country->update($validated);
 
         return response()->json(null, 204);
     }
