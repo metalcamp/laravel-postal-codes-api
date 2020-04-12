@@ -11,7 +11,7 @@ $factory->define(City::class, function (Faker $faker) {
     $country = factory(Country::class)->create();
 
     return [
-        'name' => $faker->unique()->city,
+        'name' => $faker->city,
         'country_id' => $country->id,
         'province_id' => factory(Province::class)->create(['country_id' => $country->id])->id,
     ];
