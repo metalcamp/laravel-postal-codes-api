@@ -8,6 +8,7 @@ use App\Http\Requests\CreateCityRequest;
 use App\Http\Requests\UpdateCityRequest;
 use App\Http\Resources\CityResource;
 use App\Http\Resources\CityResourceCollection;
+use Illuminate\Http\JsonResponse;
 
 class CityController extends Controller
 {
@@ -21,14 +22,14 @@ class CityController extends Controller
         );
     }
 
-    public function show(City $city)
+    public function show(City $city): CityResource
     {
         return new CityResource(
             $city->load(['country', 'province'])
         );
     }
 
-    public function store(CreateCityRequest $request)
+    public function store(CreateCityRequest $request): JsonResponse
     {
         $validated = $request->validated();
         $city      = City::create($validated);
@@ -36,7 +37,7 @@ class CityController extends Controller
         return response()->json(new CityResource($city), 201);
     }
 
-    public function update(UpdateCityRequest $request, City $city)
+    public function update(UpdateCityRequest $request, City $city): JsonResponse
     {
         $validated = $request->validated();
         $city->update($validated);
@@ -44,7 +45,7 @@ class CityController extends Controller
         return response()->json(null, 204);
     }
 
-    public function destroy(City $city)
+    public function destroy(City $city): JsonResponse
     {
         $city->delete();
 

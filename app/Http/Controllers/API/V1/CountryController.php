@@ -8,12 +8,13 @@ use App\Http\Requests\CreateCountryRequest;
 use App\Http\Requests\UpdateCountryRequest;
 use App\Http\Resources\CountryResource;
 use App\Http\Resources\CountryResourceCollection;
+use Illuminate\Http\JsonResponse;
 
 class CountryController extends Controller
 {
     private const ITEMS_PER_PAGE = 25;
 
-    public function index()
+    public function index(): CountryResourceCollection
     {
         return CountryResourceCollection::make(
             Country::with(['cities', 'provinces'])
@@ -21,12 +22,12 @@ class CountryController extends Controller
         );
     }
 
-    public function show(Country $country)
+    public function show(Country $country): CountryResource
     {
         return new CountryResource($country);
     }
 
-    public function store(CreateCountryRequest $request)
+    public function store(CreateCountryRequest $request): JsonResponse
     {
         $validated = $request->validated();
         $country   = Country::create($validated);
@@ -34,7 +35,7 @@ class CountryController extends Controller
         return response()->json(new CountryResource($country), 201);
     }
 
-    public function update(UpdateCountryRequest $request, Country $country)
+    public function update(UpdateCountryRequest $request, Country $country): JsonResponse
     {
         $validated = $request->validated();
         $country->update($validated);
@@ -42,7 +43,7 @@ class CountryController extends Controller
         return response()->json(null, 204);
     }
 
-    public function destroy(Country $country)
+    public function destroy(Country $country): JsonResponse
     {
         $country->delete();
 
