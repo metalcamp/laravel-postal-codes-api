@@ -18,6 +18,8 @@ class CityResource extends JsonResource
         return [
             'id'         => $this->id,
             'name'       => $this->name,
+            'country'    => CountryResource::make($this->whenLoaded('country')),
+            'province'   => ProvinceResource::make($this->whenLoaded('province')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

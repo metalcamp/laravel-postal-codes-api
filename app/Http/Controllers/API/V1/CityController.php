@@ -4,66 +4,50 @@ namespace App\Http\Controllers\API\V1;
 
 use App\City;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\CreateCityRequest;
+use App\Http\Requests\UpdateCityRequest;
+use App\Http\Resources\CityResource;
+use App\Http\Resources\CityResourceCollection;
 
 class CityController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    private const ITEMS_PER_PAGE = 25;
+
+    public function index(): CityResourceCollection
     {
-        //
+        return CityResourceCollection::make(
+            City::with(['province', 'country'])
+                ->paginate(self::ITEMS_PER_PAGE)
+        );
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param \App\City $city
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function show(City $city)
     {
-        //
+        return new CityResource(
+            $city->load(['country', 'province'])
+        );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(CreateCityRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $city      = City::create($validated);
+
+        return response()->json(new CityResource($city), 201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\City                $city
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, City $city)
+    public function update(UpdateCityRequest $request, City $city)
     {
-        //
+        $validated = $request->validated();
+        $city->update($validated);
+
+        return response()->json(null, 204);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \App\City $city
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(City $city)
     {
-        //
+        $city->delete();
+
+        return response()->json(null, 204);
     }
 }
