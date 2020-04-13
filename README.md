@@ -51,34 +51,33 @@ Run migrations
 ```bash
 php artisan migrate
 ```
-
-
-
-Visit http://postalcodes.localhost in your browser
+## API URL
+http://postalcodes.localhost/api/v1
 
 ## Routes
 
-| Method    | URI                                   | Name                   | Action                                                    | Middleware   |
-|-----------|---------------------------------------|------------------------|-----------------------------------------------------------|--------------|
-| POST      | api/v1/cities                         | cities.store           | App\Http\Controllers\API\V1\CityController@store          | api          |
-| GET/HEAD  | api/v1/cities                         | cities.index           | App\Http\Controllers\API\V1\CityController@index          | api          |
-| GET/HEAD  | api/v1/cities/{cityId}                | cities.show            | App\Http\Controllers\API\V1\CityController@show           | api          |
-| PUT/PATCH | api/v1/cities/{cityId}                | cities.update          | App\Http\Controllers\API\V1\CityController@update         | api          |
-| DELETE    | api/v1/cities/{cityId}                | cities.destroy         | App\Http\Controllers\API\V1\CityController@destroy        | api          |
-| GET/HEAD  | api/v1/countries                      | countries.index        | App\Http\Controllers\API\V1\CountryController@index       | api          |
-| POST      | api/v1/countries                      | countries.store        | App\Http\Controllers\API\V1\CountryController@store       | api          |
-| GET/HEAD  | api/v1/countries/{countryId}          | countries.show         | App\Http\Controllers\API\V1\CountryController@show        | api          |
-| PUT/PATCH | api/v1/countries/{countryId}          | countries.update       | App\Http\Controllers\API\V1\CountryController@update      | api          |
-| DELETE    | api/v1/countries/{countryId}          | countries.destroy      | App\Http\Controllers\API\V1\CountryController@destroy     | api          |
-| GET/HEAD  | api/v1/countries/{countryId}/cities   | countries.cities.index | App\Http\Controllers\API\V1\CountryCitiesController@index | api          |
-| POST      | api/v1/postal-codes                   | postal-codes.store     | App\Http\Controllers\API\V1\PostalCodeController@store    | api          |
-| GET/HEAD  | api/v1/postal-codes                   | postal-codes.index     | App\Http\Controllers\API\V1\PostalCodeController@index    | api          |
-| GET/HEAD  | api/v1/postal-codes/{postalCodeId}    | postal-codes.show      | App\Http\Controllers\API\V1\PostalCodeController@show     | api          |
-| PUT/PATCH | api/v1/postal-codes/{postalCodeId}    | postal-codes.update    | App\Http\Controllers\API\V1\PostalCodeController@update   | api          |
-| DELETE    | api/v1/postal-codes/{postalCodeId}    | postal-codes.destroy   | App\Http\Controllers\API\V1\PostalCodeController@destroy  | api          |
-| GET/HEAD  | api/v1/provinces                      | provinces.index        | App\Http\Controllers\API\V1\ProvinceController@index      | api          |
-| POST      | api/v1/provinces                      | provinces.store        | App\Http\Controllers\API\V1\ProvinceController@store      | api          |
-| GET/HEAD  | api/v1/provinces/{provinceId}         | provinces.show         | App\Http\Controllers\API\V1\ProvinceController@show       | api          |
-| PUT/PATCH | api/v1/provinces/{provinceId}         | provinces.update       | App\Http\Controllers\API\V1\ProvinceController@update     | api          |
-| DELETE    | api/v1/provinces/{provinceId}         | provinces.destroy      | App\Http\Controllers\API\V1\ProvinceController@destroy    | api          |
-
+| Domain | Method    | URI                               | Name                        | Action                                                    | Middleware   |
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|        | GET|HEAD  | api/v1/cities                     | cities.index                | App\Http\Controllers\API\V1\CityController@index          | api          |
+|        | POST      | api/v1/cities                     | cities.store                | App\Http\Controllers\API\V1\CityController@store          | api,auth:api |
+|        | GET|HEAD  | api/v1/cities/{city}              | cities.show                 | App\Http\Controllers\API\V1\CityController@show           | api          |
+|        | PUT|PATCH | api/v1/cities/{city}              | cities.update               | App\Http\Controllers\API\V1\CityController@update         | api,auth:api |
+|        | DELETE    | api/v1/cities/{city}              | cities.destroy              | App\Http\Controllers\API\V1\CityController@destroy        | api,auth:api |
+|        | GET|HEAD  | api/v1/countries                  | countries.index             | App\Http\Controllers\API\V1\CountryController@index       | api          |
+|        | POST      | api/v1/countries                  | countries.store             | App\Http\Controllers\API\V1\CountryController@store       | api,auth:api |
+|        | GET|HEAD  | api/v1/countries/{country}        | countries.show              | App\Http\Controllers\API\V1\CountryController@show        | api          |
+|        | PUT|PATCH | api/v1/countries/{country}        | countries.update            | App\Http\Controllers\API\V1\CountryController@update      | api,auth:api |
+|        | DELETE    | api/v1/countries/{country}        | countries.destroy           | App\Http\Controllers\API\V1\CountryController@destroy     | api,auth:api |
+|        | GET|HEAD  | api/v1/countries/{country}/cities | countries.cities.index      | App\Http\Controllers\API\V1\CountryCitiesController@index | api          |
+|        | POST      | api/v1/login                      |                             | App\Http\Controllers\API\V1\AuthController@login          | api          |
+|        | GET|HEAD  | api/v1/postal-codes               | postal-codes.index          | App\Http\Controllers\API\V1\PostalCodeController@index    | api          |
+|        | POST      | api/v1/postal-codes               | postal-codes.store          | App\Http\Controllers\API\V1\PostalCodeController@store    | api,auth:api |
+|        | GET|HEAD  | api/v1/postal-codes/{postal_code} | postal-codes.show           | App\Http\Controllers\API\V1\PostalCodeController@show     | api          |
+|        | PUT|PATCH | api/v1/postal-codes/{postal_code} | postal-codes.update         | App\Http\Controllers\API\V1\PostalCodeController@update   | api,auth:api |
+|        | DELETE    | api/v1/postal-codes/{postal_code} | postal-codes.destroy        | App\Http\Controllers\API\V1\PostalCodeController@destroy  | api,auth:api |
+|        | GET|HEAD  | api/v1/provinces                  | provinces.index             | App\Http\Controllers\API\V1\ProvinceController@index      | api          |
+|        | POST      | api/v1/provinces                  | provinces.store             | App\Http\Controllers\API\V1\ProvinceController@store      | api,auth:api |
+|        | GET|HEAD  | api/v1/provinces/{province}       | provinces.show              | App\Http\Controllers\API\V1\ProvinceController@show       | api          |
+|        | PUT|PATCH | api/v1/provinces/{province}       | provinces.update            | App\Http\Controllers\API\V1\ProvinceController@update     | api,auth:api |
+|        | DELETE    | api/v1/provinces/{province}       | provinces.destroy           | App\Http\Controllers\API\V1\ProvinceController@destroy    | api,auth:api |
+|        | POST      | api/v1/register                   |                             | App\Http\Controllers\API\V1\AuthController@register       | api          |
