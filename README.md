@@ -27,24 +27,24 @@ Enter workspace container
 sudo docker-compose exec --user=laradock workspace bash
 ```
 
+Install dependencies
+```bash
+composer install
+```
+
 Copy .env.example to .env and set missing env variables
 ```bash
 cp .env.example .env
 ```
 
-Generate jwt secret
+Generate JWT secret
 ```bash
  php artisan jwt:secret
 ```
 
-Cache config
+Cache config, routes, views etc.
 ```bash
- php artisan config:cache
-```
-
-Install dependencies
-```bash
-composer install
+ php artisan optimize
 ```
 
 Run migrations
