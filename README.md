@@ -27,6 +27,21 @@ Enter workspace container
 sudo docker-compose exec --user=laradock workspace bash
 ```
 
+Copy .env.example to .env and set missing env variables
+```bash
+cp .env.example .env
+```
+
+Generate jwt secret
+```bash
+ php artisan jwt:secret
+```
+
+Cache config
+```bash
+ php artisan config:cache
+```
+
 Install dependencies
 ```bash
 composer install
@@ -36,6 +51,8 @@ Run migrations
 ```bash
 php artisan migrate
 ```
+
+
 
 Visit http://postalcodes.localhost in your browser
 
