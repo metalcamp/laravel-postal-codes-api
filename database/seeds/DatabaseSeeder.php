@@ -1,6 +1,5 @@
 <?php
 
-use App\Country;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,8 +11,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        factory(Country::class, 50)
-            ->state('with_cities_and_provinces')
-            ->create();
+        $this->call(CountrySeeder::class);
+        $this->call(CitySeeder::class);
+        $this->call(ProvinceSeeder::class);
+        $this->call(PostalCodeSeeder::class);
     }
 }
