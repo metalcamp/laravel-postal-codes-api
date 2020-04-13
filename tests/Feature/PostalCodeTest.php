@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class PostalCodesTest extends TestCase
+class PostalCodeTest extends TestCase
 {
     use RefreshDatabase;
 

@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class CountriesTest extends TestCase
+class CountryTest extends TestCase
 {
     use RefreshDatabase;
 

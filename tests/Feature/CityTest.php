@@ -9,7 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class CitiesTest extends TestCase
+class CityTest extends TestCase
 {
     use RefreshDatabase;
 

@@ -6,7 +6,7 @@ use App\Country;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class CountriesCitiesTest extends TestCase
+class CountryCitiesTest extends TestCase
 {
     use RefreshDatabase;
 
