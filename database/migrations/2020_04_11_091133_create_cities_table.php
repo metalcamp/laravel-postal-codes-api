@@ -24,8 +24,7 @@ class CreateCitiesTable extends Migration
 
                 $table->foreign('country_id')
                     ->references('id')
-                    ->on('countries')
-                    ->onDelete('cascade');
+                    ->on('countries');
             }
         );
     }
