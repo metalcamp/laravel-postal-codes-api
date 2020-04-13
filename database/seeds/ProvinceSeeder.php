@@ -12,6 +12,8 @@ class ProvinceSeeder extends Seeder
      */
     public function run()
     {
-        factory(Province::class, 50)->create();
+        factory(Province::class, 50)
+            ->state('with_cities')
+            ->create();
     }
 }

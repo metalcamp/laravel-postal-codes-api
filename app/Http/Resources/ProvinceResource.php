@@ -20,6 +20,7 @@ class ProvinceResource extends JsonResource
             'name'       => $this->name,
             'code'       => $this->code,
             'country'    => CountryResource::make($this->whenLoaded('country')),
+            'cities'     => CityResourceCollection::make($this->whenLoaded('cities')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

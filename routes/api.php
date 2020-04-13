@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\V1\CityController;
 use App\Http\Controllers\API\V1\CountryCitiesController;
 use App\Http\Controllers\API\V1\CountryController;
+use App\Http\Controllers\API\V1\ProvinceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,7 @@ Route::group(
         Route::apiResource('cities', CityController::class);
         Route::apiResource('countries', CountryController::class);
         Route::apiResource('countries.cities', CountryCitiesController::class)->only('index');
+        Route::apiResource('provinces', ProvinceController::class);
 });
 
 
