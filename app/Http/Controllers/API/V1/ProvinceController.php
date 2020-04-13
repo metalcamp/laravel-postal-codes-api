@@ -15,6 +15,12 @@ class ProvinceController extends Controller
 {
     private const ITEMS_PER_PAGE = 25;
 
+    public function __construct()
+    {
+        $this->middleware('auth:api')
+            ->except(['index', 'show']);
+    }
+
     public function index(): ProvinceResourceCollection
     {
         return ProvinceResourceCollection::make(

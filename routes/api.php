@@ -5,7 +5,6 @@ use App\Http\Controllers\API\V1\CountryCitiesController;
 use App\Http\Controllers\API\V1\CountryController;
 use App\Http\Controllers\API\V1\PostalCodeController;
 use App\Http\Controllers\API\V1\ProvinceController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,11 +18,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')
-    ->get('/user', function (Request $request) {
-            return $request->user();
-        }
-    );
+//Route::middleware('auth:api')
+//    ->get(
+//        '/user',
+//        function (Request $request) {
+//            return $request->user();
+//        }
+//    );
+
 
 Route::group(
     [
@@ -31,11 +33,19 @@ Route::group(
     ],
     function () {
         Route::apiResource('cities', CityController::class);
-        Route::apiResource('countries', CountryController::class);
-        Route::apiResource('countries.cities', CountryCitiesController::class)
+        Route::apiResource('countries', CountryController::class)->middleware('auth:api')->except(['index','show']);
+        Route::apiResource('countries.cities', CountryCitiesController::class)->middleware('auth:api')->except(['index','show'])
             ->only('index');
-        Route::apiResource('postal-codes', PostalCodeController::class);
-        Route::apiResource('provinces', ProvinceController::class);
+        Route::apiResource('postal-codes', PostalCodeController::class)->middleware('auth:api')->except(['index','show']);
+        Route::apiResource('provinces', ProvinceController::class)->middleware('auth:api')->except(['index','show']);
+
+        Route::group(
+            ['namespace' => 'App\Http\Controllers\API\V1'],
+            function () {
+                Route::post('login', 'AuthController@login');
+                Route::post('register', 'AuthController@register');
+            }
+        );
     }
 );
 
