@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,12 +10,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class City extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes;
 
     /**
      * @var string
      */
     public $table = 'cities';
+
+    /**
+     * @var array
+     */
+    protected $cascadeDeletes = [
+        'postalCodes',
+    ];
 
     /**
      * @var array

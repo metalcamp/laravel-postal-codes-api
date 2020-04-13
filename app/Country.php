@@ -5,10 +5,12 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
+
 
 class Country extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes;
 
     /**
      * @var string
@@ -18,15 +20,23 @@ class Country extends Model
     /**
      * @var array
      */
-    protected $fillable = [
-        'name'
+    protected $cascadeDeletes = [
+        'cities',
+        'provinces',
     ];
 
-    final public function cities(): HasMany
+    /**
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+    ];
+
+    public function cities(): HasMany
     {
         return $this->hasMany(City::class, 'country_id');
     }
-    
+
     final public function provinces(): HasMany
     {
         return $this->hasMany(Province::class, 'country_id');

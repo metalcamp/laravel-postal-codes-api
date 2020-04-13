@@ -14,9 +14,24 @@ class ProvinceTest extends TestCase
     /** @test */
     public function it_has_soft_deletes_enabled()
     {
-        $country = factory(Province::class)->create();
-        $country->delete();
+        $province = factory(Province::class)->create();
+        $province->delete();
 
-        $this->assertSoftDeleted('provinces', $country->toArray());
+        $this->assertSoftDeleted('provinces', ['id' => $province->id]);
+    }
+
+    /** @test */
+    public function it_soft_deletes_related_models_when_soft_deleted()
+    {
+        $province = factory(Province::class,)->create();
+        $cities   =
+            factory(City::class, 5)->create(['province_id' => $province->id]);
+
+        $province->delete();
+
+        $this->assertCount(0,
+                           City::where('province_id', $province->id)
+                               ->get()
+        );
     }
 }

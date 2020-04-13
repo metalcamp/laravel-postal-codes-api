@@ -3,7 +3,7 @@
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 7.5.2 on 2020-04-11 13:35:03.
+ * Generated for Laravel 7.5.2 on 2020-04-13 13:05:50.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -18931,6 +18931,13 @@ namespace Illuminate\Support {
     class Fluent {}
 }
 
+namespace App {
+    /**
+    * @method \Illuminate\Database\Eloquent\Collection|PostalCode[]|PostalCode create($attributes = [])
+    * @method \Illuminate\Database\Eloquent\Collection|PostalCode[]|PostalCode make($attributes = [])
+    */
+    class PostalCodeFactoryBuilder extends \Illuminate\Database\Eloquent\FactoryBuilder {}
+}
 namespace App {
     /**
     * @method \Illuminate\Database\Eloquent\Collection|Province[]|Province create($attributes = [])
