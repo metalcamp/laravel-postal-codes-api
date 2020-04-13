@@ -51,6 +51,12 @@ Run migrations
 ```bash
 php artisan migrate
 ```
+
+Seed DB
+```bash
+php artisan db:seed
+```
+
 ## API URL
 http://postalcodes.localhost/api/v1
 
