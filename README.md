@@ -75,7 +75,6 @@ http://postalcodes.localhost/api/v1
 |        | PUT|PATCH | api/v1/countries/{country}        | countries.update            | App\Http\Controllers\API\V1\CountryController@update      | api,auth:api |
 |        | DELETE    | api/v1/countries/{country}        | countries.destroy           | App\Http\Controllers\API\V1\CountryController@destroy     | api,auth:api |
 |        | GET|HEAD  | api/v1/countries/{country}/cities | countries.cities.index      | App\Http\Controllers\API\V1\CountryCitiesController@index | api          |
-|        | POST      | api/v1/login                      |                             | App\Http\Controllers\API\V1\AuthController@login          | api          |
 |        | GET|HEAD  | api/v1/postal-codes               | postal-codes.index          | App\Http\Controllers\API\V1\PostalCodeController@index    | api          |
 |        | POST      | api/v1/postal-codes               | postal-codes.store          | App\Http\Controllers\API\V1\PostalCodeController@store    | api,auth:api |
 |        | GET|HEAD  | api/v1/postal-codes/{postal_code} | postal-codes.show           | App\Http\Controllers\API\V1\PostalCodeController@show     | api          |
@@ -86,4 +85,5 @@ http://postalcodes.localhost/api/v1
 |        | GET|HEAD  | api/v1/provinces/{province}       | provinces.show              | App\Http\Controllers\API\V1\ProvinceController@show       | api          |
 |        | PUT|PATCH | api/v1/provinces/{province}       | provinces.update            | App\Http\Controllers\API\V1\ProvinceController@update     | api,auth:api |
 |        | DELETE    | api/v1/provinces/{province}       | provinces.destroy           | App\Http\Controllers\API\V1\ProvinceController@destroy    | api,auth:api |
-|        | POST      | api/v1/register                   |                             | App\Http\Controllers\API\V1\AuthController@register       | api          |
+|        | POST      | api/v1/user/login                 |                             | App\Http\Controllers\API\V1\AuthController@login          | api          |
+|        | POST      | api/v1/user/register              |                             | App\Http\Controllers\API\V1\AuthController@register       | api          |

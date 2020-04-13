@@ -40,7 +40,10 @@ Route::group(
         Route::apiResource('provinces', ProvinceController::class);
 
         Route::group(
-            ['namespace' => 'App\Http\Controllers\API\V1'],
+            [
+                'prefix' => 'user',
+                'namespace' => 'App\Http\Controllers\API\V1'
+            ],
             function () {
                 Route::post('login', 'AuthController@login');
                 Route::post('register', 'AuthController@register');
