@@ -8,10 +8,11 @@ use App\Province;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Tests\Utils\UsesAuthentication;
 
 class ProvinceTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, UsesAuthentication;
 
     /** @test */
     public function it_returns_paginated_index_response()
@@ -107,18 +108,33 @@ class ProvinceTest extends TestCase
         $response->assertExactJson(['error' => 'Resource not found']);
     }
 
+    /** @test */
+    public function auth_required_when_creating_single_province()
+    {
+        $province = factory(Province::class)->make();
+        $response = $this->postJSON("/api/v1/provinces", $province->toArray());
+        $response->assertStatus(401)
+            ->assertJson(
+                [
+                    'message' => 'Unauthenticated.',
+                ]
+            );
+    }
+
     /** @test
      */
     public function it_returns_validation_error_when_creating_single_province()
     {
-        $response = $this->postJSON("/api/v1/provinces", []);
+        $response = $this->login()
+            ->postJSON("/api/v1/provinces", []);
 
         $expected =
             '{"message":"The given data was invalid.","errors":{"name":["The name field is required."],"country_id":["The country id field is required."]}}';
         $response->assertStatus(422);
         $this->assertEquals($expected, $response->getContent());
 
-        $response = $this->postJSON("/api/v1/provinces", ['name' => 't', 'country_id' => 9999]);
+        $response = $this->login()
+            ->postJSON("/api/v1/provinces", ['name' => 't', 'country_id' => 9999]);
 
         $expected =
             '{"message":"The given data was invalid.","errors":{"name":["The name must be at least 3 characters."],"country_id":["The selected country id is invalid."]}}';
@@ -130,7 +146,8 @@ class ProvinceTest extends TestCase
     public function it_cannot_create_province_with_same_name()
     {
         $province = factory(Province::class)->create(['name' => 'Ontario']);
-        $response = $this->postJSON("/api/v1/provinces", $province->toArray());
+        $response = $this->login()
+            ->postJSON("/api/v1/provinces", $province->toArray());
 
         $response->assertStatus(422);
         $this->assertEquals(
@@ -143,7 +160,8 @@ class ProvinceTest extends TestCase
     public function it_can_create_single_province()
     {
         $province = factory(Province::class)->make(['name' => 'Ontario']);
-        $response = $this->postJSON("/api/v1/provinces", $province->toArray());
+        $response = $this->login()
+            ->postJSON("/api/v1/provinces", $province->toArray());
 
         $response->assertStatus(201)
             ->assertJsonFragment(
@@ -159,17 +177,32 @@ class ProvinceTest extends TestCase
     }
 
     /** @test */
+    public function auth_required_when_updating_single_province()
+    {
+        $province = factory(Province::class)->make();
+        $response = $this->postJSON("/api/v1/provinces/{$province->id}", $province->toArray());
+        $response->assertStatus(401)
+            ->assertJson(
+                [
+                    'message' => 'Unauthenticated.',
+                ]
+            );
+    }
+
+    /** @test */
     public function it_returns_validation_error_when_updating_single_province()
     {
         $province = factory(Province::class)->create();
-        $response = $this->putJSON("/api/v1/provinces/{$province->id}", []);
+        $response = $this->login()
+            ->putJSON("/api/v1/provinces/{$province->id}", []);
 
         $expected =
             '{"message":"The given data was invalid.","errors":{"name":["The name field is required."],"country_id":["The country id field is required."]}}';
         $response->assertStatus(422);
         $this->assertEquals($expected, $response->getContent());
 
-        $response = $this->putJSON("/api/v1/provinces/{$province->id}", ['name' => 't', 'country_id' => 9999]);
+        $response = $this->login()
+            ->putJSON("/api/v1/provinces/{$province->id}", ['name' => 't', 'country_id' => 9999]);
 
         $expected =
             '{"message":"The given data was invalid.","errors":{"name":["The name must be at least 3 characters."],"country_id":["The selected country id is invalid."]}}';
@@ -182,7 +215,8 @@ class ProvinceTest extends TestCase
     {
         $originalProvince = factory(Province::class)->create(['name' => 'Ontario']);
         $province         = factory(Province::class)->create();
-        $response         = $this->putJSON("/api/v1/provinces/{$province->id}", $originalProvince->toArray());
+        $response         = $this->login()
+            ->putJSON("/api/v1/provinces/{$province->id}", $originalProvince->toArray());
 
         $response->assertStatus(422);
         $this->assertEquals(
@@ -198,10 +232,11 @@ class ProvinceTest extends TestCase
         $province = factory(Province::class)->create();
 
         $response =
-            $this->putJSON(
-                "/api/v1/provinces/{$province->id}",
-                ['name' => 'Ontario', 'country_id' => $country->id]
-            );
+            $this->login()
+                ->putJSON(
+                    "/api/v1/provinces/{$province->id}",
+                    ['name' => 'Ontario', 'country_id' => $country->id]
+                );
 
         $expectedData = [
             'name'       => 'Ontario',
@@ -215,10 +250,24 @@ class ProvinceTest extends TestCase
     }
 
     /** @test */
+    public function auth_required_when_deleting_single_province()
+    {
+        $province = factory(Province::class)->create();
+        $response = $this->deleteJSON("/api/v1/provinces/{$province->id}", []);
+        $response->assertStatus(401)
+            ->assertJson(
+                [
+                    'message' => 'Unauthenticated.',
+                ]
+            );
+    }
+
+    /** @test */
     public function it_can_delete_single_province()
     {
         $province = factory(Province::class)->create();
-        $response = $this->deleteJSON("/api/v1/provinces/{$province->id}");
+        $response = $this->login()
+            ->deleteJSON("/api/v1/provinces/{$province->id}");
 
         $response->assertStatus(204)
             ->assertNoContent();
@@ -232,8 +281,9 @@ class ProvinceTest extends TestCase
     /** @test */
     public function it_cannot_delete_already_deleted_single_province()
     {
-        $province     = factory(Province::class)->create(['deleted_at' => Carbon::now()]);
-        $response = $this->deleteJSON("/api/v1/provinces/{$province->id}");
+        $province = factory(Province::class)->create(['deleted_at' => Carbon::now()]);
+        $response = $this->login()
+            ->deleteJSON("/api/v1/provinces/{$province->id}");
 
         $response->assertStatus(404)
             ->assertJson(['error' => 'Resource not found']);

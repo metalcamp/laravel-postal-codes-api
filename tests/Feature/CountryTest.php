@@ -6,10 +6,11 @@ use App\Country;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Tests\Utils\UsesAuthentication;
 
 class CountryTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, UsesAuthentication;
 
     /** @test */
     public function it_returns_paginated_index_response()
@@ -52,12 +53,25 @@ class CountryTest extends TestCase
         $response->assertExactJson(['error' => 'Resource not found']);
     }
 
+    /** @test */
+    public function auth_required_when_creating_single_country()
+    {
+        $response = $this->postJSON("/api/v1/countries", []);
+        $response->assertStatus(401)
+            ->assertJson(
+                [
+                    'message' => 'Unauthenticated.',
+                ]
+            );
+    }
+
     /** @test
      * @dataProvider createSingleCountryDataProvider
      */
     public function it_returns_validation_error_when_creating_single_country($expected, $input)
     {
-        $response = $this->postJSON("/api/v1/countries", $input);
+        $response = $this->login()
+            ->postJSON("/api/v1/countries", $input);
 
         $response->assertStatus(422);
         $this->assertEquals($expected, $response->getContent());
@@ -81,7 +95,8 @@ class CountryTest extends TestCase
     public function it_cannot_create_country_with_same_name()
     {
         $country  = factory(Country::class)->create(['name' => 'Germany']);
-        $response = $this->postJSON("/api/v1/countries", ['name' => 'Germany']);
+        $response = $this->login()
+            ->postJSON("/api/v1/countries", ['name' => 'Germany']);
 
         $response->assertStatus(422);
         $this->assertEquals(
@@ -93,7 +108,8 @@ class CountryTest extends TestCase
     /** @test */
     public function it_can_create_single_country()
     {
-        $response = $this->postJSON("/api/v1/countries", ['name' => 'Germany']);
+        $response = $this->login()
+            ->postJSON("/api/v1/countries", ['name' => 'Germany']);
 
         $response->assertStatus(201)
             ->assertJsonFragment(
@@ -104,13 +120,27 @@ class CountryTest extends TestCase
         $this->assertDatabaseHas('countries', ['name' => 'Germany', 'deleted_at' => null]);
     }
 
+    /** @test */
+    public function auth_required_when_updating_single_country()
+    {
+        $country  = factory(Country::class)->create();
+        $response = $this->putJSON("/api/v1/countries/{$country->id}", $country->toArray());
+        $response->assertStatus(401)
+            ->assertJson(
+                [
+                    'message' => 'Unauthenticated.',
+                ]
+            );
+    }
+
     /** @test
      * @dataProvider createSingleCountryDataProvider
      */
     public function it_returns_validation_error_when_updating_single_country($expected, $input)
     {
         $country  = factory(Country::class)->create();
-        $response = $this->putJSON("/api/v1/countries/{$country->id}", $input);
+        $response = $this->login()
+            ->putJSON("/api/v1/countries/{$country->id}", $input);
 
         $response->assertStatus(422);
         $this->assertEquals($expected, $response->getContent());
@@ -121,7 +151,8 @@ class CountryTest extends TestCase
     {
         $originalCountry = factory(Country::class)->create(['name' => 'Germany']);
         $country         = factory(Country::class)->create();
-        $response        = $this->putJSON("/api/v1/countries/{$country->id}", ['name' => 'Germany']);
+        $response        = $this->login()
+            ->putJSON("/api/v1/countries/{$country->id}", ['name' => 'Germany']);
 
         $response->assertStatus(422);
         $this->assertEquals(
@@ -134,7 +165,8 @@ class CountryTest extends TestCase
     public function it_can_update_single_country()
     {
         $country  = factory(Country::class)->create();
-        $response = $this->putJSON("/api/v1/countries/{$country->id}", ['name' => 'United Arab Emirates']);
+        $response = $this->login()
+            ->putJSON("/api/v1/countries/{$country->id}", ['name' => 'United Arab Emirates']);
 
         $expectedData         = $country->toArray();
         $expectedData['name'] = 'United Arab Emirates';
@@ -145,10 +177,24 @@ class CountryTest extends TestCase
     }
 
     /** @test */
+    public function auth_required_when_deleting_single_country()
+    {
+        $country  = factory(Country::class)->create();
+        $response = $this->deleteJSON("/api/v1/countries/{$country->id}", []);
+        $response->assertStatus(401)
+            ->assertJson(
+                [
+                    'message' => 'Unauthenticated.',
+                ]
+            );
+    }
+
+    /** @test */
     public function it_can_delete_single_country()
     {
         $country  = factory(Country::class)->create();
-        $response = $this->deleteJSON("/api/v1/countries/{$country->id}");
+        $response = $this->login()
+            ->deleteJSON("/api/v1/countries/{$country->id}");
 
         $response->assertStatus(204)
             ->assertNoContent();
@@ -163,7 +209,8 @@ class CountryTest extends TestCase
     public function it_cannot_delete_already_deleted_single_country()
     {
         $country  = factory(Country::class)->create(['deleted_at' => Carbon::now()]);
-        $response = $this->deleteJSON("/api/v1/countries/{$country->id}");
+        $response = $this->login()
+            ->deleteJSON("/api/v1/countries/{$country->id}");
 
         $response->assertStatus(404);
         $this->assertEquals('{"error":"Resource not found"}', $response->getContent());

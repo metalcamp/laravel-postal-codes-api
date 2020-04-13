@@ -8,10 +8,11 @@ use App\Province;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Tests\Utils\UsesAuthentication;
 
 class CityTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, UsesAuthentication;
 
     /** @test */
     public function it_returns_paginated_index_response()
@@ -55,29 +56,43 @@ class CityTest extends TestCase
         $response->assertExactJson(['error' => 'Resource not found']);
     }
 
-    /** @test
-     */
+    /** @test */
+    public function auth_required_for_creating_single_city()
+    {
+        $response = $this->postJSON("/api/v1/cities", []);
+        $response->assertStatus(401)
+            ->assertJson(
+                [
+                    'message' => 'Unauthenticated.',
+                ]
+            );
+    }
+
+    /** @test */
     public function it_returns_validation_error_when_creating_single_city()
     {
         $country  = factory(Country::class)->create();
-        $response = $this->postJSON("/api/v1/cities", []);
+        $response = $this->login()
+            ->postJSON("/api/v1/cities", []);
 
         $expected =
             '{"message":"The given data was invalid.","errors":{"name":["The name field is required."],"country_id":["The country id field is required."]}}';
         $response->assertStatus(422);
         $this->assertEquals($expected, $response->getContent());
 
-        $response = $this->postJSON("/api/v1/cities", ['name' => 't', 'country_id' => 9999]);
+        $response = $this->login()
+            ->postJSON("/api/v1/cities", ['name' => 't', 'country_id' => 9999]);
 
         $expected =
             '{"message":"The given data was invalid.","errors":{"name":["The name must be at least 3 characters."],"country_id":["The selected country id is invalid."]}}';
         $response->assertStatus(422);
         $this->assertEquals($expected, $response->getContent());
 
-        $response = $this->postJSON(
-            "/api/v1/cities",
-            ['name' => 'test', 'country_id' => $country->id, 'province_id' => 9999]
-        );
+        $response = $this->login()
+            ->postJSON(
+                "/api/v1/cities",
+                ['name' => 'test', 'country_id' => $country->id, 'province_id' => 9999]
+            );
 
         $expected =
             '{"message":"The given data was invalid.","errors":{"province_id":["The selected province id is invalid."]}}';
@@ -89,7 +104,8 @@ class CityTest extends TestCase
     public function it_cannot_create_city_with_same_name()
     {
         $city     = factory(City::class)->create(['name' => 'Berlin']);
-        $response = $this->postJSON("/api/v1/cities", $city->toArray());
+        $response = $this->login()
+            ->postJSON("/api/v1/cities", $city->toArray());
 
         $response->assertStatus(422);
         $this->assertEquals(
@@ -102,7 +118,8 @@ class CityTest extends TestCase
     public function it_can_create_single_city()
     {
         $city     = factory(City::class)->make(['name' => 'Berlin']);
-        $response = $this->postJSON("/api/v1/cities", $city->toArray());
+        $response = $this->login()
+            ->postJSON("/api/v1/cities", $city->toArray());
 
         $response->assertStatus(201)
             ->assertJsonFragment(
@@ -118,28 +135,44 @@ class CityTest extends TestCase
     }
 
     /** @test */
+    public function auth_required_for_updating_single_city()
+    {
+        $city     = factory(City::class)->create();
+        $response = $this->putJSON("/api/v1/cities/{$city->id}", $city->toArray());
+        $response->assertStatus(401)
+            ->assertJson(
+                [
+                    'message' => 'Unauthenticated.',
+                ]
+            );
+    }
+
+    /** @test */
     public function it_returns_validation_error_when_updating_single_city()
     {
         $city     = factory(City::class)->create();
         $country  = factory(Country::class)->create();
-        $response = $this->putJSON("/api/v1/cities/{$city->id}", []);
+        $response = $this->login()
+            ->putJSON("/api/v1/cities/{$city->id}", []);
 
         $expected =
             '{"message":"The given data was invalid.","errors":{"name":["The name field is required."],"country_id":["The country id field is required."]}}';
         $response->assertStatus(422);
         $this->assertEquals($expected, $response->getContent());
 
-        $response = $this->putJSON("/api/v1/cities/{$city->id}", ['name' => 't', 'country_id' => 9999]);
+        $response = $this->login()
+            ->putJSON("/api/v1/cities/{$city->id}", ['name' => 't', 'country_id' => 9999]);
 
         $expected =
             '{"message":"The given data was invalid.","errors":{"name":["The name must be at least 3 characters."],"country_id":["The selected country id is invalid."]}}';
         $response->assertStatus(422);
         $this->assertEquals($expected, $response->getContent());
 
-        $response = $this->putJSON(
-            "/api/v1/cities/{$city->id}",
-            ['name' => 'test', 'country_id' => $country->id, 'province_id' => 9999]
-        );
+        $response = $this->login()
+            ->putJSON(
+                "/api/v1/cities/{$city->id}",
+                ['name' => 'test', 'country_id' => $country->id, 'province_id' => 9999]
+            );
 
         $expected =
             '{"message":"The given data was invalid.","errors":{"province_id":["The selected province id is invalid."]}}';
@@ -152,7 +185,8 @@ class CityTest extends TestCase
     {
         $originalCity = factory(City::class)->create(['name' => 'Berlin']);
         $city         = factory(City::class)->create();
-        $response     = $this->putJSON("/api/v1/cities/{$city->id}", $originalCity->toArray());
+        $response     = $this->login()
+            ->putJSON("/api/v1/cities/{$city->id}", $originalCity->toArray());
 
         $response->assertStatus(422);
         $this->assertEquals(
@@ -168,10 +202,11 @@ class CityTest extends TestCase
         $city     = factory(City::class)->create();
         $province = factory(Province::class)->create();
         $response =
-            $this->putJSON(
-                "/api/v1/cities/{$city->id}",
-                ['name' => 'Gotham City', 'country_id' => $country->id, 'province_id' => $province->id]
-            );
+            $this->login()
+                ->putJSON(
+                    "/api/v1/cities/{$city->id}",
+                    ['name' => 'Gotham City', 'country_id' => $country->id, 'province_id' => $province->id]
+                );
 
         $expectedData = [
             'name'        => 'Gotham City',
@@ -185,10 +220,24 @@ class CityTest extends TestCase
     }
 
     /** @test */
+    public function auth_required_for_deleting_single_city()
+    {
+        $city     = factory(City::class)->create();
+        $response = $this->deleteJSON("/api/v1/cities/{$city->id}", $city->toArray());
+        $response->assertStatus(401)
+            ->assertJson(
+                [
+                    'message' => 'Unauthenticated.',
+                ]
+            );
+    }
+
+    /** @test */
     public function it_can_delete_single_city()
     {
         $city     = factory(City::class)->create();
-        $response = $this->deleteJSON("/api/v1/cities/{$city->id}");
+        $response = $this->login()
+            ->deleteJSON("/api/v1/cities/{$city->id}");
 
         $response->assertStatus(204)
             ->assertNoContent();
@@ -203,7 +252,8 @@ class CityTest extends TestCase
     public function it_cannot_delete_already_deleted_single_city()
     {
         $city     = factory(City::class)->create(['deleted_at' => Carbon::now()]);
-        $response = $this->deleteJSON("/api/v1/cities/{$city->id}");
+        $response = $this->login()
+            ->deleteJSON("/api/v1/cities/{$city->id}");
 
         $response->assertStatus(404)
             ->assertJson(['error' => 'Resource not found']);
