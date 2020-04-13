@@ -60,6 +60,16 @@ class Handler extends ExceptionHandler
             );
         }
 
+        $exceptionCode = $exception->getCode();
+        if ($request->wantsJson() && $exceptionCode > 500 && $exceptionCode < 599) {
+            return response()->json(
+                [
+                    'error' => 'Something went wrong',
+                ],
+                $exception->getCode()
+            );
+        }
+
         return parent::render($request, $exception);
     }
 }
