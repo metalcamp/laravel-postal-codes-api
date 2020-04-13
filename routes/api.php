@@ -33,11 +33,11 @@ Route::group(
     ],
     function () {
         Route::apiResource('cities', CityController::class);
-        Route::apiResource('countries', CountryController::class)->middleware('auth:api')->except(['index','show']);
-        Route::apiResource('countries.cities', CountryCitiesController::class)->middleware('auth:api')->except(['index','show'])
+        Route::apiResource('countries', CountryController::class);
+        Route::apiResource('countries.cities', CountryCitiesController::class)
             ->only('index');
-        Route::apiResource('postal-codes', PostalCodeController::class)->middleware('auth:api')->except(['index','show']);
-        Route::apiResource('provinces', ProvinceController::class)->middleware('auth:api')->except(['index','show']);
+        Route::apiResource('postal-codes', PostalCodeController::class);
+        Route::apiResource('provinces', ProvinceController::class);
 
         Route::group(
             ['namespace' => 'App\Http\Controllers\API\V1'],
