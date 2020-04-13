@@ -17,7 +17,7 @@ class CountryController extends Controller
     public function index(): CountryResourceCollection
     {
         return CountryResourceCollection::make(
-            Country::with(['cities', 'provinces'])
+            Country::with(['provinces'])
                 ->paginate(self::ITEMS_PER_PAGE)
         );
     }
