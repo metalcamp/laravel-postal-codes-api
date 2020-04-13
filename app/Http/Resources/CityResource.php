@@ -16,12 +16,13 @@ class CityResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'         => $this->id,
-            'name'       => $this->name,
-            'country'    => CountryResource::make($this->whenLoaded('country')),
-            'province'   => ProvinceResource::make($this->whenLoaded('province')),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'id'          => $this->id,
+            'name'        => $this->name,
+            'country'     => CountryResource::make($this->whenLoaded('country')),
+            'province'    => ProvinceResource::make($this->whenLoaded('province')),
+            'postal_code' => PostalCodeResourceCollection::make($this->whenLoaded('postalCodes')),
+            'created_at'  => $this->created_at,
+            'updated_at'  => $this->updated_at,
         ];
     }
 }

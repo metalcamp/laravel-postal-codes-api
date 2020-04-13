@@ -20,9 +20,9 @@ class Province extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
         'code',
         'country_id',
+        'name',
     ];
 
     final public function country(): BelongsTo

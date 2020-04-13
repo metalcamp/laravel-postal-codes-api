@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\V1\CityController;
 use App\Http\Controllers\API\V1\CountryCitiesController;
 use App\Http\Controllers\API\V1\CountryController;
+use App\Http\Controllers\API\V1\PostalCodeController;
 use App\Http\Controllers\API\V1\ProvinceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,19 +19,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:api')
+    ->get('/user', function (Request $request) {
+            return $request->user();
+        }
+    );
 
 Route::group(
     [
         'prefix' => 'v1',
-    ], function(){
+    ],
+    function () {
         Route::apiResource('cities', CityController::class);
         Route::apiResource('countries', CountryController::class);
-        Route::apiResource('countries.cities', CountryCitiesController::class)->only('index');
+        Route::apiResource('countries.cities', CountryCitiesController::class)
+            ->only('index');
+        Route::apiResource('postal-codes', PostalCodeController::class);
         Route::apiResource('provinces', ProvinceController::class);
-});
+    }
+);
 
 
 

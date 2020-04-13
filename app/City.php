@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class City extends Model
@@ -32,5 +33,10 @@ class City extends Model
     final public function province(): BelongsTo
     {
         return $this->belongsTo(Province::class, 'province_id');
+    }
+
+    final public function postalCodes(): HasMany
+    {
+        return $this->hasMany(PostalCode::class, 'city_id');
     }
 }
